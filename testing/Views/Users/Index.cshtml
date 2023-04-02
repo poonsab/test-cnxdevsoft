@@ -1,59 +1,67 @@
 ﻿@model IEnumerable<testing.AddModels.User>
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Users</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<button class="btn btn-success">
+	<a asp-action="Create" class="text-white">Create New</a>
+</button>
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Fname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Lname)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Active)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserType)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Active)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserType.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Fname)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Lname)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Active)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Address)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.UserType)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Fname)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Lname)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Active)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Address)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.UserType.Id)
+				</td>
+				<td>
+					<button class="btn btn-warning">
+						<a class="text-white" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+					</button>|
+					<button class="btn btn-primary">
+						<a class="text-white" asp-action="Details" asp-route-id="@item.Id">Details</a>
+					</button>|
+					<button class="btn btn-danger">
+						<a class="text-white" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+					</button>
+
+				</td>
+			</tr>
+		}
+	</tbody>
 </table>

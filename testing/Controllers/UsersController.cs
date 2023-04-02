@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.FlowAnalysis;
+using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.EntityFrameworkCore;
+using RestSharp;
 using testing.AddModels;
 
 namespace testing.Controllers
@@ -22,8 +24,13 @@ namespace testing.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            var dbexampleContext = _context.Users.Include(u => u.UserType);
-            return View(await dbexampleContext.ToListAsync());
+            List<User> user = new List<User>();
+            var getuser = _context.Users.Where(x=>x.Active == true).Include(u => u.UserType).ToList();
+            if(getuser.Count > 0)
+            {
+                user.AddRange(getuser);
+            }
+            return View(user.ToList());
         }
 
         // GET: Users/Details/5
@@ -62,7 +69,7 @@ namespace testing.Controllers
             if (user == null) return Problem("Input Data Is Required");
             if (user.Id == 0)
             {
-                user.UserTypeId = 1;
+                user.UserTypeId = 2; //fix type user
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -70,7 +77,16 @@ namespace testing.Controllers
             ViewData["UserTypeId"] = new SelectList(_context.UserTypes, "Id", "Id", user.UserTypeId);
             return View(user);
         }
+        public async Task<IActionResult> GetByIdAync(long id)
+        {
+            var client = new RestClient($"http://api.football-data.org/v1/competitions/{id}/leagueTable");
+            var request = new RestRequest();
+            RestResponse response = await client.ExecuteAsync(request);
 
+            //TODO: transform the response here to suit your needs
+
+            return Ok(response);
+        }
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -100,7 +116,7 @@ namespace testing.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (user.Id != null && user.Id != 0)
             {
                 try
                 {
@@ -155,10 +171,11 @@ namespace testing.Controllers
             var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
-                _context.Users.Remove(user);
+                user.Active= false;
+                _context.Update(user);
+                await _context.SaveChangesAsync();
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
